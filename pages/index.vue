@@ -69,6 +69,28 @@
       <span v-if="isLoading">Loading...</span>
       <span v-else>Generate Speech</span>
     </button>
+
+
+    <!-- Play Preview Button -->
+    <button
+      @click="playAudio"
+      class="preview-btn"
+      :disabled="!audioUrl || isLoading"
+    >
+      Speak It
+    </button>
+
+    <!-- Download Button -->
+    <button
+      @click="downloadAudio"
+      class="download-btn"
+      :disabled="!audioUrl || isLoading"
+    >
+      Download
+    </button>
+    <!-- Audio Player for Preview -->
+    <audio v-if="audioUrl" :src="audioUrl" ref="audioPlayer" preload="auto"></audio>
+      
   </div>
 </template>
 
@@ -86,7 +108,9 @@ const speed = ref(1.0);
 const pitch = ref(0.0);
 const fileName = ref("output"); // 默认文件名
 
+const audioUrl = ref(null); // 用于存储音频的 URL
 const isLoading = ref(false); // 按钮加载状态
+const audioPlayer = ref(null); // 引用 audio 元素
 
 const generateSpeech = async () => {
   if (isLoading.value) return
@@ -116,22 +140,39 @@ const generateSpeech = async () => {
     const blob = response.data;
 
     // 动态创建下载链接
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
+    audioUrl.value = window.URL.createObjectURL(blob);
+    // const link = document.createElement("a");
+    // link.href = url;
 
-    // 使用用户输入的文件名，并加上 .mp3 后缀
-    const sanitizedFileName = fileName.value.trim() || "output"; // 防止用户输入空值
-    link.download = `${sanitizedFileName}.mp3`;
-    link.click();
+    // // 使用用户输入的文件名，并加上 .mp3 后缀
+    // const sanitizedFileName = fileName.value.trim() || "output"; // 防止用户输入空值
+    // link.download = `${sanitizedFileName}.mp3`;
+    // link.click();
 
-    // 释放 URL
-    window.URL.revokeObjectURL(url);
+    // // 释放 URL
+    // window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Error generating speech:', error);
     alert('An error occurred while generating the speech. Please try again.');
   } finally {
     isLoading.value = false; // 加载完成
+  }
+};
+
+// Play the generated audio
+const playAudio = () => {
+  if (audioPlayer.value) {
+    audioPlayer.value.play();
+  }
+};
+
+// Download the generated audio
+const downloadAudio = () => {
+  if (audioUrl.value) {
+    const link = document.createElement('a');
+    link.href = audioUrl.value;
+    link.download = `${fileName.value || 'output'}.mp3`;
+    link.click();
   }
 };
 </script>
@@ -191,5 +232,29 @@ textarea {
 
 .speak-btn:hover {
   background-color: #357ae8;
+}
+.preview-btn,
+.download-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #34a853;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.preview-btn:hover,
+.download-btn:hover {
+  background-color: #1c8d3e;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>

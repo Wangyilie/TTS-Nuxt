@@ -1,5 +1,4 @@
 import textToSpeech from '@google-cloud/text-to-speech';
-import { readFile } from 'fs/promises';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -15,6 +14,9 @@ export default defineEventHandler(async (event) => {
       audioEncoding: 'MP3',
       speakingRate: body.speed,
       pitch: body.pitch,
+      "effectsProfileId": [
+        "small-bluetooth-speaker-class-device"
+      ],
     },
   };
 
