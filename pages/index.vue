@@ -42,12 +42,22 @@
     <div class="slider-group">
       <div class="form-group">
         <label for="speed">Speed: {{ speed }}</label>
-        <input type="range" id="speed" v-model="speed" min="0.25" max="4.0" step="0.01" />
+        <input style="width: 100%;" type="range" id="speed" v-model="speed" min="0.25" max="4.0" step="0.01" />
+        <input
+          type="text"
+          v-model="speed"
+        />
       </div>
 
+    </div>
+    <div class="slider-group">
       <div class="form-group">
         <label for="pitch">Pitch: {{ pitch }}</label>
-        <input type="range" id="pitch" v-model="pitch" min="-20.0" max="20.0" step="0.1" />
+        <input style="width: 100%;" type="range" id="pitch" v-model="pitch" min="-20.0" max="20.0" step="0.1" />
+        <input
+          type="text"
+          v-model="pitch"
+        />
       </div>
     </div>
 
@@ -213,8 +223,8 @@ textarea {
 }
 
 .slider-group {
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
 }
 
 .speak-btn {
